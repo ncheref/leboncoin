@@ -64,6 +64,7 @@ class AdvertController extends Controller
 
         if ($form->isValid()) {
             $em->persist($advert);
+            // event pre flush to check coherence (checkCoherence function in Advert entity)
             $em->flush();
             return $advert;
         } else {

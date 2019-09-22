@@ -3,12 +3,14 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Form\FormError;
 
 /**
  * Advert
  *
  * @ORM\Table(name="advert")
  * @ORM\Entity(repositoryClass="AppBundle\Repository\AdvertRepository")
+ * @ORM\HasLifecycleCallbacks()
  */
 class Advert
 {
@@ -277,5 +279,39 @@ class Advert
     public function getCategory()
     {
         return $this->category;
+    }
+
+    /**
+     * @ORM\PreFlush()
+     */
+    public function checkCoherence()
+    {
+        if($this->getCategory()) {
+            switch ($this->getCategory()->getName()) {
+                case 'Automobile':
+                    $this
+                        ->setArea(null)
+                        ->setContractType(null)
+                        ->setSalary(null)
+                    ;
+                    break;
+
+                case 'Emploi':
+                    $this
+                        ->setFuel(null)
+                        ->setPrice(null)
+                        ->setArea(null)
+                    ;
+                    break;
+
+                case 'Immobilier':
+                    $this
+                        ->setFuel(null)
+                        ->setContractType(null)
+                        ->setSalary(null)
+                    ;
+                    break;
+            }
+        }
     }
 }
